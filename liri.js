@@ -1,203 +1,387 @@
 require("dotenv").config();
 var fs = require("fs");
 var keys = require("./keys.js");
-var request = require('request');
-var Spotify = require('node-spotify-api');
+var Spotify = require("node-spotify-api");
+var axios = require("axios");
+var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
+var command = process.argv[2];
+var songName = process.argv[3];
+var bitArtist = process.argv[3];
+var movie = process.argv[3];
 
+var logStart = "\n] LIRI BOT [\n";
 
-var action = process.argv[2];
-var parameter = process.argv[3];
+var logEnd = "\n] -******** e n d ********- [\n";
 
+switch (command) {
 
+    case "concert-this":
 
+        if (bitArtist == null) {
 
-function switchCase() {
+            var text = (logStart + command + " :: " + bitArtist + "\n" + "I'm sorry nobody is playing in your neighborhood, please try your search again..." + logEnd);
 
-  switch (action) {
+            console.log("I'm sorry nobody is playing in your neighborhood, please try your search again...");
 
-    case 'concert-this':
-      bandsInTown(parameter);                   
-      break;                          
+            fs.appendFile("log.txt", text, function(err) {
 
-    case 'spotify-this-song':
-      spotSong(parameter);
-      break;
+                if (err) {
 
-    case 'movie-this':
-      movieInfo(parameter);
-      break;
+                    console.log(err);
 
-    case 'do-what-it-says':
-      getRandom();
-      break;
+                } else {
 
-      default:                            
-      logIt("Invalid Instruction");
-      break;
+                    console.log("Liri Log has been updated...");
 
-  }
-};
+                }
 
-function bandsInTown(parameter){
+            })
 
-if (action === 'concert-this')
-{
-	var movieName="";
-	for (var i = 3; i < process.argv.length; i++)
-	{
-		movieName+=process.argv[i];
-	}
-	console.log(movieName);
-}
-else
-{
-	movieName = parameter;
-}
+        } else {
 
+            axios.get("https://rest.bandsintown.com/artists/" + bitArtist + "/events?app_id=codingbootcamp")
 
+                .then(function(response) {
 
-var queryUrl = "https://rest.bandsintown.com/artists/"+movieName+"/events?app_id=codecademy";
+                        console.log(bitArtist + " is playing at the...");
 
+                        console.log("Name of the venue: " + response.data[0].venue.name);
 
-request(queryUrl, function(error, response, body) {
+                        console.log("Location: " + response.data[0].venue.city);
 
-  if (!error && response.statusCode === 200) {
+                        console.log("Date of event: " + moment(response.data[0].datetime).format("MM/DD/YYYY"));
 
-    var JS = JSON.parse(body);
-    for (i = 0; i < JS.length; i++)
-    {
-      var dTime = JS[i].datetime;
-        var month = dTime.substring(5,7);
-        var year = dTime.substring(0,4);
-        var day = dTime.substring(8,10);
-        var dateForm = month + "/" + day + "/" + year
-  
-      logIt("\n---------------------------------------------------\n");
+                        var text = [logStart + command + " :: " + bitArtist + "\n" + "Name of the venue: " + response.data[0].venue.name + "\n" + "Location: " + response.data[0].venue.city + "\n" + "Date of event: " + moment(response.data[0].datetime).format("MM/DD/YYYY") + logEnd];
 
-        
-      logIt("Date: " + dateForm);
-      logIt("Name: " + JS[i].venue.name);
-      logIt("City: " + JS[i].venue.city);
-      if (JS[i].venue.region !== "")
-      {
-        logIt("Country: " + JS[i].venue.region);
-      }
-      logIt("Country: " + JS[i].venue.country);
-      logIt("\n---------------------------------------------------\n");
+                        fs.appendFile("log.txt", text, function(err) {
 
-    }
-  }
-});
-}
-function spotSong(parameter) {
+                            if (err) {
 
+                                console.log(err);
 
-  var searchTrack;
-  if (parameter === undefined) {
-    searchTrack = "Transmission Joy Division";
-  } else {
-    searchTrack = parameter;
-  }
+                            } else {
 
-  spotify.search({
-    type: 'track',
-    query: searchTrack
-  }, function(error, data) {
-    if (error) {
-      logIt('Error occurred: ' + error);
-      return;
-    } else {
-      logIt("\n---------------------------------------------------\n");
-      logIt("Artist: " + data.tracks.items[0].artists[0].name);
-      logIt("Song: " + data.tracks.items[0].name);
-      logIt("Preview: " + data.tracks.items[3].preview_url);
-      logIt("Album: " + data.tracks.items[0].album.name);
-      logIt("\n---------------------------------------------------\n");
-      
-    }
-  });
-};
-function movieInfo(parameter) {
+                                console.log("Liri Log has been updated...");
+                            }
 
+                        });
 
-  var findMovie;
-  if (parameter === undefined) {
-    findMovie = "The Matrix";
-  } else {
-    findMovie = parameter;
-  };
+                    },
+                    function(error) {
 
-  var queryUrl = "http://www.omdbapi.com/?t=" + findMovie + "&y=&plot=short&apikey=trilogy";
-  
-  request(queryUrl, function(err, res, body) {
-  	var bodyOf = JSON.parse(body);
-    if (!err && res.statusCode === 200) {
-      logIt("\n---------------------------------------------------\n");
-      logIt("Title: " + bodyOf.Title);
-      logIt("Release Year: " + bodyOf.Year);
-      logIt("IMDB Rating: " + bodyOf.imdbRating);
-      logIt("Rotten Tomatoes Rating: " + bodyOf.Ratings[1].Value); 
-      logIt("Country: " + bodyOf.Country);
-      logIt("Language: " + bodyOf.Language);
-      logIt("Plot: " + bodyOf.Plot);
-      logIt("Actors: " + bodyOf.Actors);
-      logIt("\n---------------------------------------------------\n");
-    }
-  });
-};
+                        if (error.response) {
 
-function getRandom() {
-fs.readFile('random.txt', "utf8", function(error, data){
+                            console.log(error.response.data);
 
-    if (error) {
-        return logIt(error);
-      }
+                            console.log(error.response.status);
 
-  
-    var dataArr = data.split(",");
-    
-    if (dataArr[0] === "spotify-this-song") 
-    {
-      var songcheck = dataArr[1].trim().slice(1, -1);
-      spotSong(songcheck);
-    } 
-    else if (dataArr[0] === "concert-this") 
-    { 
-      if (dataArr[1].charAt(1) === "'")
-      {
-      	var dLength = dataArr[1].length - 1;
-      	var data = dataArr[1].substring(2,dLength);
-      	console.log(data);
-      	bandsInTown(data);
-      }
-      else
-      {
-	      var bandName = dataArr[1].trim();
-	      console.log(bandName);
-	      bandsInTown(bandName);
-	  }
-  	  
-    } 
-    else if(dataArr[0] === "movie-this") 
-    {
-      var movie_name = dataArr[1].trim().slice(1, -1);
-      movieInfo(movie_name);
-    } 
-    
-    });
+                            console.log(error.response.headers);
 
-};
+                        } else if (error.request) {
 
-function logIt(dataToLog) {
+                            console.log(error.request);
 
-	console.log(dataToLog);
+                        } else {
 
-	fs.appendFile('log.txt', dataToLog + '\n', function(err) {
-		
-		if (err) return logIt('Error logging data to file: ' + err);	
-	});
-}
+                            console.log('Error', error.message);
 
+                        }
 
-switchCase();
+                        console.log(error.config);
+                    }
+                )
+        }
+
+        break;
+
+    case "spotify-this-song":
+
+        if (songName == null) {
+
+            if (command) {
+
+                spotify.request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
+
+                    .then(function(data) {
+
+                        var artists = data.artists[0].name;
+
+                        var songTitle = data.name;
+
+                        var songUrl = data.preview_url;
+
+                        var songAlbum = data.album.name;
+
+                        console.log("Artist(s): " + data.artists[0].name);
+
+                        console.log("The Song's Name: " + data.name);
+
+                        console.log("Spotify Preview Link: " + data.preview_url);
+
+                        console.log("Album: " + data.album.name);
+
+                        var text = [logStart + process.argv[2] + " :: " + process.argv[3] + "\n" + "Artist(s): " + artists + "\n" + "The Song's Name: " + songTitle + "\n" + "Spotify Preview Link: " + songUrl + "\n" + "Album: " + songAlbum + logEnd];
+
+                        fs.appendFile("log.txt", text, function(err) {
+
+                            if (err) {
+
+                                console.log(err);
+
+                            } else {
+
+                                console.log("Liri Log has been updated...");
+                            }
+
+                        });
+
+                    })
+
+                    .catch(function(err) {
+
+                        console.error('Error occurred: ' + err);
+
+                    });
+            }
+
+        } else {
+
+            if (command) {
+
+                spotify.search({
+
+                        type: "track",
+
+                        query: songName,
+
+                        limit: 10
+                    },
+
+                    function(err, data) {
+
+                        if (err) {
+
+                            console.log('Error occurred: ' + err);
+
+                            return;
+
+                        } else {
+
+                            var songInfo = data.tracks.items[0];
+
+                            var artists = songInfo.artists[0].name;
+
+                            var songTitle = songInfo.name;
+
+                            var songUrl = songInfo.preview_url;
+
+                            var songAlbum = songInfo.album.name;
+
+                            console.log("Artist(s): " + artists);
+
+                            console.log("The Song's Name: " + songInfo.name);
+
+                            console.log("Spotify Preview Link: " + songInfo.preview_url);
+
+                            console.log("Album: " + songInfo.album.name);
+
+                            fs.appendFile("log.txt", text, function(err) {
+
+                                if (err) {
+
+                                    console.log(err);
+
+                                } else {
+
+                                    console.log("Liri Log has been updated...");
+                                }
+
+                            });
+                        };
+                    })
+            };
+        }
+
+        break;
+
+    case "movie-this":
+
+        if (movie == null) {
+
+            axios.get("https://omdbapi.com/?t=mr.nobody&apikey=trilogy")
+
+                .then(function(resp) {
+                    //console.log(resp.data);
+                    console.log("Movie Title: " + resp.data.Title);
+                    console.log("Year Released: " + resp.data.Year);
+                    console.log("IMDB Rating: " + resp.data.imdbRating);
+                    console.log("Rotten Tomatoes Rating: " + resp.data.Ratings[1].Value);
+                    console.log("Country Produced: " + resp.data.Country);
+                    console.log("Language of the Movie: " + resp.data.Language);
+                    console.log("Movie Plot: " + resp.data.Plot);
+                    console.log("Movie Actors: " + resp.data.Actors);
+
+                    var text = [logStart + process.argv[2] + " :: " + process.argv[3] + "\n" + "Movie Title: " + resp.data.Title + "\n" + "Year Released: " + resp.data.Year + "\n" + "IMDB Rating: " + resp.data.imdbRating + "\n" + "Rotten Tomatoes Rating: " + resp.data.Ratings[1].Value + "\n" + "Country Produced: " + resp.data.Country + "\n" + "Language of the Movie: " + resp.data.Language + "\n" + "Movie Plot: " + resp.data.Plot + logEnd];
+
+                    fs.appendFile("log.txt", text, function(err) {
+
+                        if (err) {
+
+                            console.log(err);
+
+                        } else {
+
+                            console.log("Liri Log has been updated...");
+                        }
+
+                    });
+
+                }, function(error) {
+
+                    if (error.resp) {
+
+                        console.log(error.resp.data);
+                        console.log(error.resp.status);
+                        console.log(error.resp.headers);
+
+                    } else if (error.request) {
+
+                        console.log(error.request);
+
+                    } else {
+
+                        console.log('Error', error.message);
+                    }
+                    console.log(error.config);
+                })
+
+        } else {
+
+            axios.get("https://omdbapi.com/?t=" + movie + "&apikey=trilogy")
+
+                .then(function(resp) {
+
+                    console.log("Movie Title: " + resp.data.Title);
+                    console.log("Year Released: " + resp.data.Year);
+                    console.log("IMDB Rating: " + resp.data.imdbRating);
+                    console.log("Rotten Tomatoes Rating: " + resp.data.Ratings[1].Value);
+                    console.log("Country Produced: " + resp.data.Country);
+                    console.log("Language of the Movie: " + resp.data.Language);
+                    console.log("Movie Plot: " + resp.data.Plot);
+                    console.log("Movie Actors: " + resp.data.Actors);
+
+                    fs.appendFile("log.txt", text, function(err) {
+
+                        if (err) {
+
+                            console.log(err);
+
+                        } else {
+
+                            console.log("Liri Log has been updated...");
+                        }
+
+                    });
+
+                }, function(error) {
+
+                    if (error.resp) {
+
+                        console.log(error.resp.data);
+                        console.log(error.resp.status);
+                        console.log(error.resp.headers);
+
+                    } else if (error.request) {
+
+                        console.log(error.request);
+
+                    } else {
+
+                        console.log('Error', error.message);
+
+                    }
+
+                    console.log(error.config);
+                })
+        }
+
+        break;
+
+    case "do-what-it-says":
+        fs.readFile("random.txt", "utf8", function(error, data) {
+
+            if (error) {
+                return console.log(error);
+            }
+
+            var dataArr = data.split(",");
+
+            var song = dataArr[1];
+
+            spotify.search({
+
+                    type: "track",
+
+                    query: song,
+
+                    limit: 1
+                },
+
+                function(err, data) {
+
+                    if (err) {
+
+                        console.log('Error occurred: ' + err);
+
+                        return;
+
+                    } else {
+
+                        var songInfo = data.tracks.items[0];
+
+                        var artists = songInfo.artists[0].name;
+
+                        var songTitle = songInfo.name;
+
+                        var songUrl = songInfo.preview_url;
+
+                        var songAlbum = songInfo.album.name;
+
+                        console.log("Artist(s): " + artists);
+
+                        console.log("The Song's Name: " + songInfo.name);
+
+                        console.log("Spotify Preview Link: " + songInfo.preview_url);
+
+                        console.log("Album: " + songInfo.album.name);
+
+                        var text = [logStart + process.argv[2] + " :: " + artists + "\n" + "The Song's Name: " + songTitle + "\n" + "Spotify Preview Link: " + songUrl + "\n" + "Album: " + songAlbum + logEnd];
+
+                        fs.appendFile("log.txt", text, function(err) {
+
+                            if (err) {
+
+                                console.log(err);
+
+                            } else {
+
+                                console.log("Liri Log has been updated...");
+
+                            }
+
+                        });
+
+                    };
+
+                })
+
+        });
+
+        break;
+
+    default:
+
+        console.log("I'm so sorry, but your search returned no valuable results...");
+
+};// end switch
