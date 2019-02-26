@@ -19,7 +19,7 @@ Venue location
 
 Date of the Event (use moment to format this as "MM/DD/YYYY")
 
-![My image](danbrit.github.com/LIRI-node-app/img/concert-this.jpg)
+![My image](https://github.com/DanBrit/LIRI-node-app/blob/master/img/concert-this.png)
 
 
 
@@ -51,11 +51,11 @@ This will output the following information to your terminal/bash window:
 * Plot of the movie.
 * Actors in the movie.
 
-![My image](danbrit.github.com/LIRI-node-app/img/movie-this.jpg)
+![My image](https://github.com/DanBrit/LIRI-node-app/blob/master/img/movie-this.png)
 
 
 **node liri.js do-what-it-says**
 
 Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.    
 
-![My image](danbrit.github.com/LIRI-node-app/img/do-what.jpg)
+![My image](https://github.com/DanBrit/LIRI-node-app/blob/master/img/do-what.png)
