@@ -19,6 +19,10 @@ Venue location
 
 Date of the Event (use moment to format this as "MM/DD/YYYY")
 
+![My image](danbrit.github.com/LIRI-node-app/img/concert-this.jpg)
+
+
+
 **node liri.js spotify-this-song '<song name here>'**
 
 This will show the following information about the song in your terminal/bash window
@@ -31,7 +35,8 @@ A preview link of the song from Spotify
 
 The album that the song is from
 
-If no song is provided then your program will default to "The Sign" by Ace of Base.
+![My image](danbrit.github.com/LIRI-node-app/img/spotify-this.jpg)
+
 
 **node liri.js movie-this '<movie name here>'**
 
@@ -46,8 +51,11 @@ This will output the following information to your terminal/bash window:
 * Plot of the movie.
 * Actors in the movie.
 
-If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+![My image](danbrit.github.com/LIRI-node-app/img/movie-this.jpg)
+
 
 **node liri.js do-what-it-says**
 
 Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.    
+
+![My image](danbrit.github.com/LIRI-node-app/img/do-what.jpg)

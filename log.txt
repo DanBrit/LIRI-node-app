@@ -1,1 +1,14 @@
-undefined
+undefinedundefinedundefinedundefined
+] LIRI LOG [
+concert-this :: sylvan esso
+Name of the venue: BottleRock Napa Valley
+Location: Napa
+Date of event: 05/24/2019
+] -******** end entry ********- [
+
+] LIRI LOG [
+do-what-it-says :: Backstreet Boys
+The Song's Name: I Want It That Way
+Spotify Preview Link: https://p.scdn.co/mp3-preview/e72a05dc3f69c891e3390c3ceaa77fad02f6b5f6?cid=ba7ef0b6927940959aac18448da9b270
+Album: The Hits--Chapter One
+] -******** end entry ********- [
