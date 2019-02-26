@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 var fs = require("fs");
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
@@ -9,10 +10,8 @@ var command = process.argv[2];
 var songName = process.argv[3];
 var bitArtist = process.argv[3];
 var movie = process.argv[3];
-
-var logStart = "\n] LIRI BOT [\n";
-
-var logEnd = "\n] -******** e n d ********- [\n";
+var logStart = "\n] LIRI LOG [\n";
+var logEnd = "\n] -******** end entry ********- [\n";
 
 switch (command) {
 
@@ -45,11 +44,8 @@ switch (command) {
                 .then(function(response) {
 
                         console.log(bitArtist + " is playing at the...");
-
                         console.log("Name of the venue: " + response.data[0].venue.name);
-
                         console.log("Location: " + response.data[0].venue.city);
-
                         console.log("Date of event: " + moment(response.data[0].datetime).format("MM/DD/YYYY"));
 
                         var text = [logStart + command + " :: " + bitArtist + "\n" + "Name of the venue: " + response.data[0].venue.name + "\n" + "Location: " + response.data[0].venue.city + "\n" + "Date of event: " + moment(response.data[0].datetime).format("MM/DD/YYYY") + logEnd];
@@ -73,9 +69,7 @@ switch (command) {
                         if (error.response) {
 
                             console.log(error.response.data);
-
                             console.log(error.response.status);
-
                             console.log(error.response.headers);
 
                         } else if (error.request) {
@@ -106,19 +100,13 @@ switch (command) {
                     .then(function(data) {
 
                         var artists = data.artists[0].name;
-
                         var songTitle = data.name;
-
                         var songUrl = data.preview_url;
-
                         var songAlbum = data.album.name;
 
                         console.log("Artist(s): " + data.artists[0].name);
-
                         console.log("The Song's Name: " + data.name);
-
                         console.log("Spotify Preview Link: " + data.preview_url);
-
                         console.log("Album: " + data.album.name);
 
                         var text = [logStart + process.argv[2] + " :: " + process.argv[3] + "\n" + "Artist(s): " + artists + "\n" + "The Song's Name: " + songTitle + "\n" + "Spotify Preview Link: " + songUrl + "\n" + "Album: " + songAlbum + logEnd];
@@ -169,21 +157,14 @@ switch (command) {
                         } else {
 
                             var songInfo = data.tracks.items[0];
-
                             var artists = songInfo.artists[0].name;
-
                             var songTitle = songInfo.name;
-
                             var songUrl = songInfo.preview_url;
-
                             var songAlbum = songInfo.album.name;
 
                             console.log("Artist(s): " + artists);
-
                             console.log("The Song's Name: " + songInfo.name);
-
                             console.log("Spotify Preview Link: " + songInfo.preview_url);
-
                             console.log("Album: " + songInfo.album.name);
 
                             fs.appendFile("log.txt", text, function(err) {
@@ -316,7 +297,6 @@ switch (command) {
             }
 
             var dataArr = data.split(",");
-
             var song = dataArr[1];
 
             spotify.search({
@@ -339,21 +319,14 @@ switch (command) {
                     } else {
 
                         var songInfo = data.tracks.items[0];
-
                         var artists = songInfo.artists[0].name;
-
                         var songTitle = songInfo.name;
-
                         var songUrl = songInfo.preview_url;
-
                         var songAlbum = songInfo.album.name;
 
                         console.log("Artist(s): " + artists);
-
                         console.log("The Song's Name: " + songInfo.name);
-
                         console.log("Spotify Preview Link: " + songInfo.preview_url);
-
                         console.log("Album: " + songInfo.album.name);
 
                         var text = [logStart + process.argv[2] + " :: " + artists + "\n" + "The Song's Name: " + songTitle + "\n" + "Spotify Preview Link: " + songUrl + "\n" + "Album: " + songAlbum + logEnd];

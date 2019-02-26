@@ -1,8 +1,1 @@
 undefined
-] LIRI BOT [
-concert-this :: shakey graves
-Name of the venue: Innings Festival
-Location: Tempe
-Date of event: 03/03/2019
-] -******** e n d ********- [
-undefined
