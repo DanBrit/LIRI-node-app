@@ -35,7 +35,7 @@ A preview link of the song from Spotify
 
 The album that the song is from
 
-![My image](danbrit.github.com/LIRI-node-app/img/spotify-this.jpg)
+![My image](https://github.com/DanBrit/LIRI-node-app/blob/master/img/spotify-this.png)
 
 
 **node liri.js movie-this '<movie name here>'**
